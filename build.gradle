@@ -1,0 +1,77 @@
+//23.03.13 Querdsl관련 추가
+buildscript {
+    ext{
+        queryDslVersion ="5.0.0"
+    }
+}
+
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '2.7.8'
+    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+
+
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    compileOnly 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    //lombok을 테스트 환경에서도 사용
+    testCompileOnly'org.projectlombok:lombok'
+    testAnnotationProcessor'org.projectlombok:lombok'
+    // 레이아웃 기능을 만들기 위해서 별도의 라이브러리 필요
+    implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:3.1.0'
+
+    //23.03.13 Querdsl관련 라이브러리 추가
+    implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
+
+    annotationProcessor(
+            "javax.persistence:javax.persistence-api",
+            "javax.annotation:javax.annotation-api",
+            "com.querydsl:querydsl-apt:${queryDslVersion}:jpa")
+
+    //23.03.15 modelMapper 추가
+    implementation 'org.modelmapper:modelmapper:3.1.0'
+
+    // @Valid를 사용하기 위한 라이브러리 추가
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    //스프링 시큐리티 기본설정
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+//23.03.13 Querdsl관련 추가
+sourceSets {
+    main{
+        java{
+            srcDirs = ["$projectDir/src/main/java","$projectDir/build/generated"]
+        }
+    }
+}
